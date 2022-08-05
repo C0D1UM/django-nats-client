@@ -1,0 +1,42 @@
+[tool.poetry]
+name = "django-nats"
+version = "0.0.0"
+description = ""
+authors = ["CODIUM <support@codium.co>"]
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/C0D1UM/django-nats"
+keywords = ["django", "nats", "listener", "python"]
+packages = [
+    { include = "django_nats" },
+]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+django = ">=3.1 || <5"
+nats-py = ">=2.1"
+
+[tool.poetry.dev-dependencies]
+pylint = "^2"
+yapf = "^0"
+toml = "^0"
+ipdb = "^0"
+django-environ = "^0.8"
+coverage = "^6"
+"backports.zoneinfo" = { version = "^0.2", python = "~3.8" }
+
+[tool.poetry-dynamic-versioning]
+enable = true
+vcs = "git"
+style = "semver"
+
+[tool.yapf]
+based_on_style = 'google'
+column_limit = 120
+coalesce_brackets = true
+dedent_closing_brackets = true
+split_arguments_when_comma_terminated = true
+
+[build-system]
+requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning"]
+build-backend = "poetry.core.masonry.api"

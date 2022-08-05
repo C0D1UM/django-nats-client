@@ -1,0 +1,101 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - "django_nats/**/*"
+      - "test_django_nats/**/*"
+      - "pyproject.toml"
+      - "poetry.lock"
+  pull_request:
+    branches: [ main ]
+    paths:
+      - "django_nats/**/*"
+      - "test_django_nats/**/*"
+      - "pyproject.toml"
+      - "poetry.lock"
+  workflow_dispatch:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.10"
+      - name: Fetch pip cache
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/pip
+          key: pip
+      - name: Install dependencies
+        run: |
+          pip install pylint~=2.0
+      - name: Analyzing the code
+        run: |
+          pylint django_nats test_django_nats
+  test:
+    needs:
+      - lint
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python: [ "3.8", "3.9", "3.10" ]
+        django: [ "3.1", "3.2", "4.0" ]
+        # ref: https://github.com/jefftriplett/python-github-actions-matrix-demo
+        exclude:
+          # Python 3.10 is compatible with Django 3.2+
+          - python: "3.10"
+            django: "3.1"
+        # newest matrix set which will upload to codecov
+        include:
+          - python: "3.10"
+            django: "4.0"
+            codecov: "true"
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Fetch pip cache
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: pip-${{ matrix.python }}
+      - name: Load cached venv
+        id: cached-poetry-dependencies
+        uses: actions/cache@v3
+        with:
+          path: /home/runner/.cache/pypoetry/virtualenvs
+          key: venv-${{ matrix.python }}-${{ matrix.django }}-${{ hashFiles('**/poetry.lock') }}
+      - name: Install Poetry
+        uses: abatilo/actions-poetry@v2.1.5
+        with:
+          poetry-version: "1.1.14"
+      - name: Install dependencies
+        run: |
+          poetry install -n
+          poetry add -n django@~${{ matrix.django }}.0
+      - name: Verify package versions
+        run: |
+          python -V
+          poetry show django
+      - name: Run tests
+        working-directory: ./test_django_nats
+        env:
+          DJANGO_SETTINGS_MODULE: config.settings
+        run: |
+          poetry run coverage run manage.py test
+          poetry run coverage report -m
+          poetry run coverage xml
+      - name: Upload coverage to Codecov
+        if: matrix.codecov == 'true'
+        uses: codecov/codecov-action@v3
+        with:
+          directory: ./test_django_nats
+          fail_ci_if_error: true
