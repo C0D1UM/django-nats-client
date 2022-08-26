@@ -38,7 +38,7 @@ class FunctionRegistry:
 
     @property
     def subjects(self):
-        return [x[0] for x in self.registry.keys()]
+        return [x[0] for x in self.registry]
 
 
 default_registry = FunctionRegistry()

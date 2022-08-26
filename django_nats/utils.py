@@ -14,6 +14,7 @@ def parse_arguments(method_name: str, args: tuple, kwargs: dict) -> bytes:
     return json.dumps(msg, cls=DjangoJSONEncoder).encode()
 
 
+# pylint: disable=invalid-name
 class DatabaseSyncToAsync(SyncToAsync):
     """
     SyncToAsync version that cleans up old database connections when it exits.

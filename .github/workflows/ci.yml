@@ -36,7 +36,7 @@ jobs:
           pip install pylint~=2.0
       - name: Analyzing the code
         run: |
-          pylint django_nats test_django_nats
+          pylint django_nats tests
   test:
     needs:
       - lint
@@ -86,7 +86,6 @@ jobs:
           python -V
           poetry show django
       - name: Run tests
-        working-directory: ./test_django_nats
         env:
           DJANGO_SETTINGS_MODULE: config.settings
         run: |
@@ -97,5 +96,4 @@ jobs:
         if: matrix.codecov == 'true'
         uses: codecov/codecov-action@v3
         with:
-          directory: ./test_django_nats
           fail_ci_if_error: true

@@ -1,7 +1,7 @@
 default: yapf lint test
 
 lint:
-	poetry run pylint django_nats test_django_nats
+	poetry run pylint django_nats tests
 
 test:
 	cd tests && poetry run python manage.py test
@@ -12,4 +12,4 @@ coverage:
 	poetry run coverage report -m
 
 yapf:
-	poetry run yapf -ipr django_nats test_django_nats
+	poetry run yapf -ipr django_nats tests

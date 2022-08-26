@@ -5,10 +5,12 @@ from django_nats.registry import FunctionRegistry
 
 @test.override_settings(NATS_DEFAULT_SUBJECT='subject')
 class FunctionRegistryRegisterTest(test.TestCase):
+
     def setUp(self) -> None:
         self.registry = FunctionRegistry()
 
     def test_register_with_no_parenthesis(self):
+
         @self.registry.register
         def func():
             pass
@@ -18,6 +20,7 @@ class FunctionRegistryRegisterTest(test.TestCase):
         self.assertEqual(self.registry.registry[('subject', 'func')], func)
 
     def test_register_with_no_argument(self):
+
         @self.registry.register()
         def func():
             pass
@@ -27,6 +30,7 @@ class FunctionRegistryRegisterTest(test.TestCase):
         self.assertEqual(self.registry.registry[('subject', 'func')], func)
 
     def test_register_with_custom_subject(self):
+
         @self.registry.register('custom')
         def func():
             pass
@@ -36,6 +40,7 @@ class FunctionRegistryRegisterTest(test.TestCase):
         self.assertEqual(self.registry.registry[('custom', 'func')], func)
 
     def test_register_with_custom_name(self):
+
         @self.registry.register(name='custom')
         def func():
             pass
@@ -45,6 +50,7 @@ class FunctionRegistryRegisterTest(test.TestCase):
         self.assertEqual(self.registry.registry[('subject', 'custom')], func)
 
     def test_register_with_custom_subject_and_name(self):
+
         @self.registry.register('custom_subject', 'custom_name')
         def func():
             pass
@@ -54,6 +60,7 @@ class FunctionRegistryRegisterTest(test.TestCase):
         self.assertEqual(self.registry.registry[('custom_subject', 'custom_name')], func)
 
     def test_register_without_decorator(self):
+
         def func():
             pass
 
@@ -64,6 +71,7 @@ class FunctionRegistryRegisterTest(test.TestCase):
         self.assertEqual(self.registry.registry[('subject', 'func')], func)
 
     def test_register_without_decorator_with_kwargs(self):
+
         def func():
             pass
 
@@ -74,6 +82,7 @@ class FunctionRegistryRegisterTest(test.TestCase):
         self.assertEqual(self.registry.registry[('subject', 'func')], func)
 
     def test_register_without_decorator_all_params(self):
+
         def func():
             pass
 
@@ -84,6 +93,7 @@ class FunctionRegistryRegisterTest(test.TestCase):
         self.assertEqual(self.registry.registry[('custom_subject', 'custom_name')], func)
 
     def test_duplicated_function(self):
+
         def func():
             pass
 
@@ -92,6 +102,7 @@ class FunctionRegistryRegisterTest(test.TestCase):
         self.assertEqual(len(self.registry.registry.keys()), 1)
 
     def test_duplicated_name(self):
+
         @self.registry.register
         def func():
             pass
@@ -103,6 +114,7 @@ class FunctionRegistryRegisterTest(test.TestCase):
         self.assertEqual(len(self.registry.registry.keys()), 1)
 
     def test_duplicated_name_but_different_subject(self):
+
         @self.registry.register
         def func():
             pass
