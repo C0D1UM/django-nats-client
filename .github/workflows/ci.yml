@@ -5,14 +5,14 @@ on:
     branches: [ main ]
     paths:
       - "django_nats/**/*"
-      - "test_django_nats/**/*"
+      - "tests/**/*"
       - "pyproject.toml"
       - "poetry.lock"
   pull_request:
     branches: [ main ]
     paths:
       - "django_nats/**/*"
-      - "test_django_nats/**/*"
+      - "tests/**/*"
       - "pyproject.toml"
       - "poetry.lock"
   workflow_dispatch:
@@ -90,7 +90,7 @@ jobs:
         env:
           DJANGO_SETTINGS_MODULE: config.settings
         run: |
-          poetry run coverage run manage.py test
+          poetry run coverage run --source='django_nats' tests/manage.py test tests
           poetry run coverage report -m
           poetry run coverage xml
       - name: Upload coverage to Codecov
