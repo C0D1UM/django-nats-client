@@ -6,7 +6,7 @@ from django.conf import settings
 from django.core.management import BaseCommand
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import close_old_connections
-from nats.aio.client import Client as NATS
+from nats.aio.client import Client
 from nats.aio.client import Msg
 from nats.aio.errors import ErrNoServers
 from nats.aio.errors import ErrTimeout
@@ -32,7 +32,7 @@ database_sync_to_async = DatabaseSyncToAsync
 
 
 class Command(BaseCommand):
-    nats = NATS()
+    nats = Client()
 
     def handle(self, *args, **options):
         loop = asyncio.get_event_loop()
@@ -58,7 +58,7 @@ class Command(BaseCommand):
             print(f'Received a message on "{msg.subject} {reply}": {data}')
             await self.nats_handler(reply, data)
 
-        for subject in settings.NATS_SUBJECT_HANDLERS:
+        for subject in default_registry.subjects:
             await self.nats.subscribe(subject, cb=callback)
 
     async def clean(self):

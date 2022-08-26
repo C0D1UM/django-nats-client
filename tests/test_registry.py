@@ -3,7 +3,7 @@ from django import test
 from django_nats.registry import FunctionRegistry
 
 
-@test.override_settings(NATS_SUBJECT='subject')
+@test.override_settings(NATS_DEFAULT_SUBJECT='subject')
 class FunctionRegistryRegisterTest(test.TestCase):
     def setUp(self) -> None:
         self.registry = FunctionRegistry()

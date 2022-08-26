@@ -44,30 +44,35 @@ pip install django-nats
        'connect_timeout': 1,
        ...
    }
-   NATS_SUBJECT_HANDLERS = ['default']
+   NATS_DEFAULT_SUBJECT = 'subject'
    ```
 
 ## Usage
 
 ### Listen for messages
 
-1. Create a new callback method in `[app_dir]/nats_callback.py` and register
+1. Create a new callback method and register
 
    ```python
    # common/nats_callback.py
 
-   from django_nats import register_callback
+   import django_nats
 
-   @register_callback
+   @django_nats.register
    def get_year_from_date(date: str):
        return date.year
 
+   # custom subject
+   @django_nats.register('subject')
+   def current_time():
+       return datetime.datetime.now().strftime('%H:%M')
+
    # custom method name
-   @register_callback('get_current_time')
+   @django_nats.register('subject', 'get_current_time')
    def current_time():
        return datetime.datetime.now().strftime('%H:%M')
    ```
-   
+
 2. Run listener management command
 
    ```bash
@@ -77,10 +82,10 @@ pip install django-nats
 ### Sending message
 
 ```python
-from django_nats import nats_client
+import django_nats
 
 arg = 'some arg'
-nats_client.send(
+django_nats.send(
     'subject_name',
     'method_name',
     arg,
@@ -92,18 +97,18 @@ nats_client.send(
 Examples
 
 ```python
-from django_nats import nats_client
+import django_nats
 
-year = nats_client.send('default', 'get_year_from_date', datetime.date(2022, 1, 1))  # 2022
-current_time = nats_client.send('default', 'get_current_time')  # 12:11
+year = django_nats.send('default', 'get_year_from_date', datetime.date(2022, 1, 1))  # 2022
+current_time = django_nats.send('default', 'get_current_time')  # 12:11
 ```
 
 ## Settings
 
-| Key                     | Required | Default | Description                                    |
-|-------------------------|----------|---------|------------------------------------------------|
-| `NATS_OPTIONS`          | Yes      |         | Configuration to be passed in `nats.connect()` |
-| `NATS_SUBJECT_HANDLERS` | No       | []      | List of subject name to listen                 |
+| Key                    | Required | Default   | Description                                       |
+|------------------------|----------|-----------|---------------------------------------------------|
+| `NATS_OPTIONS`         | Yes      |           | Configuration to be passed in `nats.connect()`    |
+| `NATS_DEFAULT_SUBJECT` | No       | 'default' | Default subject for registering callback function |
 
 ## Development
 
