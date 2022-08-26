@@ -7,36 +7,36 @@ class FunctionRegistry:
     def __init__(self):
         self.registry = {}
 
-    def register(self, subject: str = None, key: str = None, func=None):
+    def register(self, subject=None, name=None, func=None):
         if subject is None and getattr(settings, 'NATS_SUBJECT') is None:
             raise ValueError('Require one of `subject` in register function or `NATS_SUBJECT` in settings')
 
         # @register()
-        if subject is None and key is None and func is None:
+        if subject is None and name is None and func is None:
             return self.register_function
 
         # register(...)
         if func is not None:
-            return self.register_function(func, key, subject)
+            return self.register_function(func, name, subject)
 
         # @register
-        if subject is not None and key is None and func is None and callable(subject):
+        if subject is not None and name is None and func is None and callable(subject):
             return self.register_function(subject)
 
         # @register(...)
         def dec(func):
-            return self.register(subject, key, func)
+            return self.register(subject, name, func)
 
         return dec
 
-    def register_function(self, func, key: str = None, subject: str = None):
-        key = key or getattr(func, '_decorated_function', func).__name__
+    def register_function(self, func, name: str = None, subject: str = None):
+        name = name or getattr(func, '_decorated_function', func).__name__
         subject = subject or settings.NATS_SUBJECT
 
-        if (subject, key) in self.registry:
-            raise ValueError(f'Duplicated NATS function named `{key}` in subject `{subject}`.')
+        if (subject, name) in self.registry:
+            raise ValueError(f'Duplicated NATS function named `{name}` in subject `{subject}`.')
 
-        self.registry[(subject, key)] = func
+        self.registry[(subject, name)] = func
         return func
 
 
