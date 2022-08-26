@@ -8,9 +8,6 @@ class FunctionRegistry:
         self.registry = {}
 
     def register(self, subject=None, name=None, func=None):
-        if subject is None and getattr(settings, 'NATS_DEFAULT_SUBJECT') is None:
-            raise ValueError('Require one of `subject` in register function or `NATS_DEFAULT_SUBJECT` in settings')
-
         # @register()
         if subject is None and name is None and func is None:
             return self.register_function
@@ -31,7 +28,7 @@ class FunctionRegistry:
 
     def register_function(self, func, name: str = None, subject: str = None):
         name = name or getattr(func, '_decorated_function', func).__name__
-        subject = subject or settings.NATS_DEFAULT_SUBJECT
+        subject = subject or getattr(settings, 'NATS_DEFAULT_SUBJECT', 'default')
 
         if (subject, name) in self.registry:
             raise ValueError(f'Duplicated NATS function named `{name}` in subject `{subject}`.')

@@ -44,7 +44,7 @@ pip install django-nats
        'connect_timeout': 1,
        ...
    }
-   NATS_DEFAULT_SUBJECT = 'subject'
+   NATS_DEFAULT_SUBJECT = 'default'
    ```
 
 ## Usage
