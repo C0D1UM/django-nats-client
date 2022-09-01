@@ -4,14 +4,14 @@ on:
   push:
     branches: [ main ]
     paths:
-      - "django_nats/**/*"
+      - "nats_client/**/*"
       - "tests/**/*"
       - "pyproject.toml"
       - "poetry.lock"
   pull_request:
     branches: [ main ]
     paths:
-      - "django_nats/**/*"
+      - "nats_client/**/*"
       - "tests/**/*"
       - "pyproject.toml"
       - "poetry.lock"
@@ -36,7 +36,7 @@ jobs:
           pip install pylint~=2.0
       - name: Analyzing the code
         run: |
-          pylint django_nats tests
+          pylint nats_client tests
   test:
     needs:
       - lint
@@ -89,7 +89,7 @@ jobs:
         env:
           DJANGO_SETTINGS_MODULE: settings
         run: |
-          poetry run coverage run --source='django_nats' tests/manage.py test tests
+          poetry run coverage run --source='nats_client' tests/manage.py test tests
           poetry run coverage report -m
           poetry run coverage xml
       - name: Upload coverage to Codecov

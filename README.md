@@ -1,11 +1,11 @@
 # Django NATS
 
-[![GitHub](https://img.shields.io/github/license/C0D1UM/django-nats)](https://github.com/C0D1UM/django-nats/blob/main/LICENSE)
-[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/C0D1UM/django-nats/CI)](https://github.com/C0D1UM/django-nats/actions/workflows/ci.yml)
-[![codecov](https://codecov.io/gh/C0D1UM/django-nats/branch/main/graph/badge.svg?token=PN19DJ3SDF)](https://codecov.io/gh/C0D1UM/django-nats)
-[![PyPI](https://img.shields.io/pypi/v/django-nats)](https://pypi.org/project/django-nats/)  
-[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/django-nats)](https://github.com/C0D1UM/django-nats)
-[![Django Version](https://img.shields.io/badge/django-3.1%20%7C%203.2%20%7C%204.0-blue)](https://github.com/C0D1UM/django-nats)
+[![GitHub](https://img.shields.io/github/license/C0D1UM/django-nats-client)](https://github.com/C0D1UM/django-nats-client/blob/main/LICENSE)
+[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/C0D1UM/django-nats-client/CI)](https://github.com/C0D1UM/django-nats-client/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/C0D1UM/django-nats-client/branch/main/graph/badge.svg?token=PN19DJ3SDF)](https://codecov.io/gh/C0D1UM/django-nats-client)
+[![PyPI](https://img.shields.io/pypi/v/django-nats-client)](https://pypi.org/project/django-nats-client/)  
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/django-nats-client)](https://github.com/C0D1UM/django-nats-client)
+[![Django Version](https://img.shields.io/badge/django-3.1%20%7C%203.2%20%7C%204.0-blue)](https://github.com/C0D1UM/django-nats-client)
 
 ## Features
 
@@ -17,19 +17,19 @@
 ## Installation
 
 ```bash
-pip install django-nats
+pip install django-nats-client
 ```
 
 ## Setup
 
-1. Add `django_nats` into `INSTALLED_APPS`
+1. Add `nats_client` into `INSTALLED_APPS`
 
    ```python
    # settings.py
 
    INSTALLED_APPS = [
        ...
-       'django_nats',
+       'nats_client',
    ]
    ```
 
@@ -56,19 +56,19 @@ pip install django-nats
    ```python
    # common/nats_callback.py
 
-   import django_nats
+   import nats_client
 
-   @django_nats.register
+   @nats_client.register
    def get_year_from_date(date: str):
        return date.year
 
    # custom subject
-   @django_nats.register('subject')
+   @nats_client.register('subject')
    def current_time():
        return datetime.datetime.now().strftime('%H:%M')
 
    # custom method name
-   @django_nats.register('subject', 'get_current_time')
+   @nats_client.register('subject', 'get_current_time')
    def current_time():
        return datetime.datetime.now().strftime('%H:%M')
    ```
@@ -82,10 +82,10 @@ pip install django-nats
 ### Sending message
 
 ```python
-import django_nats
+import nats_client
 
 arg = 'some arg'
-django_nats.send(
+nats_client.send(
     'subject_name',
     'method_name',
     arg,
@@ -97,10 +97,10 @@ django_nats.send(
 Examples
 
 ```python
-import django_nats
+import nats_client
 
-year = django_nats.send('default', 'get_year_from_date', datetime.date(2022, 1, 1))  # 2022
-current_time = django_nats.send('default', 'get_current_time')  # 12:11
+year = nats_client.send('default', 'get_year_from_date', datetime.date(2022, 1, 1))  # 2022
+current_time = nats_client.send('default', 'get_current_time')  # 12:11
 ```
 
 ## Settings

@@ -11,7 +11,7 @@ from nats.aio.client import Msg
 from nats.aio.errors import ErrNoServers
 from nats.aio.errors import ErrTimeout
 
-from django_nats.registry import default_registry
+from nats_client.registry import default_registry
 
 
 class DatabaseSyncToAsync(SyncToAsync):

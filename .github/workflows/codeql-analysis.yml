@@ -15,7 +15,7 @@ on:
   push:
     branches: [ main ]
     paths:
-      - "django_nats/**/*"
+      - "nats_client/**/*"
       - "tests/**/*"
       - "pyproject.toml"
       - "poetry.lock"
@@ -23,7 +23,7 @@ on:
     # The branches below must be a subset of the branches above
     branches: [ main ]
     paths:
-      - "django_nats/**/*"
+      - "nats_client/**/*"
       - "tests/**/*"
       - "pyproject.toml"
       - "poetry.lock"

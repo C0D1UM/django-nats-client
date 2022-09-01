@@ -1,14 +1,14 @@
 [tool.poetry]
-name = "django-nats"
+name = "django-nats-client"
 version = "0.0.0"
 description = ""
 authors = ["CODIUM <support@codium.co>"]
 license = "MIT"
 readme = "README.md"
-repository = "https://github.com/C0D1UM/django-nats"
+repository = "https://github.com/C0D1UM/django-nats-client"
 keywords = ["django", "nats", "listener", "python"]
 packages = [
-    { include = "django_nats" },
+    { include = "nats_client" },
 ]
 
 [tool.poetry.dependencies]

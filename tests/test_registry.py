@@ -1,6 +1,6 @@
 from django import test
 
-from django_nats.registry import FunctionRegistry
+from nats_client.registry import FunctionRegistry
 
 
 @test.override_settings(NATS_DEFAULT_SUBJECT='subject')
