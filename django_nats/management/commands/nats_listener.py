@@ -49,6 +49,12 @@ class Command(BaseCommand):
         try:
             await self.nats.connect(**settings.NATS_OPTIONS)
             print('** Connected to NATS server')
+            if not default_registry.registry:
+                print('** No function found!')
+            else:
+                print('** Listened on:')
+                for subject, func_name in default_registry.registry.keys():
+                    print('     - [', subject, ']', func_name)
         except (ErrNoServers, ErrTimeout) as e:
             raise e
 
@@ -56,7 +62,7 @@ class Command(BaseCommand):
             reply = msg.reply
             data = msg.data.decode()
             print(f'Received a message on "{msg.subject} {reply}": {data}')
-            await self.nats_handler(reply, data)
+            await self.nats_handler(subject, reply, data)
 
         for subject in default_registry.subjects:
             await self.nats.subscribe(subject, cb=callback)
@@ -64,16 +70,17 @@ class Command(BaseCommand):
     async def clean(self):
         await self.nats.close()
 
-    async def nats_handler(self, reply, body):
+    async def nats_handler(self, subject, reply, body):
         data = json.loads(body)
 
         name = data['name']
         args = data['args']
         kwargs = data['kwargs']
 
-        func = default_registry.registry.get(name)
+        func = default_registry.registry.get((subject, name))
         if func is None:
-            print(f'No function found for "{name}"')
+            print(f'No function found for "{subject}: {name}"')
+            return
 
         func = database_sync_to_async(func)
         r = await func(*args, **kwargs)
