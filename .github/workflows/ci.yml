@@ -87,7 +87,7 @@ jobs:
           poetry show django
       - name: Run tests
         env:
-          DJANGO_SETTINGS_MODULE: config.settings
+          DJANGO_SETTINGS_MODULE: settings
         run: |
           poetry run coverage run --source='django_nats' tests/manage.py test tests
           poetry run coverage report -m
