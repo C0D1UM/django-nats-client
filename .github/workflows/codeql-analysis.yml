@@ -19,6 +19,7 @@ on:
       - "tests/**/*"
       - "pyproject.toml"
       - "poetry.lock"
+      - ".github/workflows/codeql-analysis.yml"
 
 jobs:
   analyze:
