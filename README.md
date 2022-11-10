@@ -33,7 +33,7 @@ pip install django-nats-client
    ]
    ```
 
-3. Put NATS connection configuration in settings
+1. Put NATS connection configuration in settings
 
    ```python
    # settings.py
@@ -54,7 +54,7 @@ pip install django-nats-client
 1. Create a new callback method and register
 
    ```python
-   # common/nats_callback.py
+   # common/nats.py
 
    import nats_client
 
@@ -73,7 +73,19 @@ pip install django-nats-client
        return datetime.datetime.now().strftime('%H:%M')
    ```
 
-2. Run listener management command
+1. Import previously file in `ready` method of your `apps.py`
+
+   ```python
+   # common/apps.py
+
+   class CommonConfig(AppConfig):
+       ...
+
+       def ready(self):
+           import common.nats
+   ```
+
+1. Run listener management command
 
    ```bash
    python manage.py nats_listener
