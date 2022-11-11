@@ -64,8 +64,8 @@ class Command(BaseCommand):
             print(f'Received a message on "{msg.subject} {reply}": {data}')
             await self.nats_handler(subject, reply, data)
 
-        for subject in default_registry.subjects:
-            await self.nats.subscribe(subject, cb=callback)
+        subject = getattr(settings, 'NATS_LISTENING_SUBJECT', 'default')
+        await self.nats.subscribe(subject, cb=callback)
 
     async def clean(self):
         await self.nats.close()

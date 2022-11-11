@@ -44,7 +44,7 @@ pip install django-nats-client
        'connect_timeout': 1,
        ...
    }
-   NATS_DEFAULT_SUBJECT = 'default'
+   NATS_LISTENING_SUBJECT = 'default'
    ```
 
 ## Usage
@@ -62,15 +62,15 @@ pip install django-nats-client
    def get_year_from_date(date: str):
        return date.year
 
-   # custom subject
-   @nats_client.register('subject')
+   # custom name
+   @nats_client.register('get_current_time')
    def current_time():
        return datetime.datetime.now().strftime('%H:%M')
 
-   # custom method name
-   @nats_client.register('subject', 'get_current_time')
+   # without decorator
    def current_time():
        return datetime.datetime.now().strftime('%H:%M')
+   nats_client.register('get_current_time', current_time)
    ```
 
 1. Import previously file in `ready` method of your `apps.py`
@@ -117,10 +117,10 @@ current_time = nats_client.send('default', 'get_current_time')  # 12:11
 
 ## Settings
 
-| Key                    | Required | Default   | Description                                       |
-|------------------------|----------|-----------|---------------------------------------------------|
-| `NATS_OPTIONS`         | Yes      |           | Configuration to be passed in `nats.connect()`    |
-| `NATS_DEFAULT_SUBJECT` | No       | 'default' | Default subject for registering callback function |
+| Key                      | Required | Default   | Description                                       |
+|--------------------------|----------|-----------|---------------------------------------------------|
+| `NATS_OPTIONS`           | Yes      |           | Configuration to be passed in `nats.connect()`    |
+| `NATS_LISTENING_SUBJECT` | No       | 'default' | Subject for registering callback function         |
 
 ## Development
 
