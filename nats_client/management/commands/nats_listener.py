@@ -53,8 +53,8 @@ class Command(BaseCommand):
                 print('** No function found!')
             else:
                 print('** Listened on:')
-                for subject, func_name in default_registry.registry.keys():
-                    print('     - [', subject, ']', func_name)
+                for func_name in default_registry.registry.keys():
+                    print('     - ', func_name)
         except (ErrNoServers, ErrTimeout) as e:
             raise e
 
