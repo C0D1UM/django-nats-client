@@ -61,8 +61,8 @@ class Command(BaseCommand):
         async def callback(msg: Msg):
             reply = msg.reply
             data = msg.data.decode()
-            print(f'Received a message on "{msg.subject} {reply}": {data}')
-            await self.nats_handler(subject, reply, data)
+            print(f'Received a message on "{reply}": {data}')
+            await self.nats_handler(reply, data)
 
         subject = getattr(settings, 'NATS_LISTENING_SUBJECT', 'default')
         await self.nats.subscribe(subject, cb=callback)
@@ -70,16 +70,16 @@ class Command(BaseCommand):
     async def clean(self):
         await self.nats.close()
 
-    async def nats_handler(self, subject, reply, body):
+    async def nats_handler(self, reply, body):
         data = json.loads(body)
 
         name = data['name']
         args = data['args']
         kwargs = data['kwargs']
 
-        func = default_registry.registry.get((subject, name))
+        func = default_registry.registry.get(name)
         if func is None:
-            print(f'No function found for "{subject}: {name}"')
+            print(f'No function found for "{name}"')
             return
 
         func = database_sync_to_async(func)
