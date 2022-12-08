@@ -86,7 +86,7 @@ jobs:
           poetry-version: "1.1.14"
       - name: Install dependencies
         run: |
-          poetry add -n django@~${{ matrix.django }}.0
+          poetry add -n django@~${{ matrix.django }}
           poetry install -n
       - name: Verify package versions
         run: |
