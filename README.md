@@ -97,12 +97,12 @@ pip install django-nats-client
 import nats_client
 
 arg = 'some arg'
-nats_client.send(
-    'subject_name',
-    'method_name',
-    arg,
-    keyword_arg=1,
-    another_keyword_arg=2,
+nats_client.request(
+   'subject_name',
+   'method_name',
+   arg,
+   keyword_arg=1,
+   another_keyword_arg=2,
 )
 ```
 
@@ -111,8 +111,8 @@ Examples
 ```python
 import nats_client
 
-year = nats_client.send('default', 'get_year_from_date', datetime.date(2022, 1, 1))  # 2022
-current_time = nats_client.send('default', 'get_current_time')  # 12:11
+year = nats_client.request('default', 'get_year_from_date', datetime.date(2022, 1, 1))  # 2022
+current_time = nats_client.request('default', 'get_current_time')  # 12:11
 ```
 
 ## Settings
