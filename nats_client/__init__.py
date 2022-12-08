@@ -1,3 +1,3 @@
 # pylint: disable=unused-import
-from .clients import send, send_async
+from .clients import request, request_async
 from .registry import register

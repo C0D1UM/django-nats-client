@@ -50,6 +50,11 @@ jobs:
         django: [ "3.1", "3.2", "4.0", "4.1" ]
         # ref: https://github.com/jefftriplett/python-github-actions-matrix-demo
         exclude:
+          # Django 4.0+ requires zoneinfo from Python 3.9+
+          - python: "3.8"
+            django: "4.0"
+          - python: "3.8"
+            django: "4.1"
           # Python 3.10 is compatible with Django 3.2+
           - python: "3.10"
             django: "3.1"
@@ -81,8 +86,8 @@ jobs:
           poetry-version: "1.1.14"
       - name: Install dependencies
         run: |
+          poetry add -n django@~${{ matrix.django }}
           poetry install -n
-          poetry add -n django@~${{ matrix.django }}.0
       - name: Verify package versions
         run: |
           python -V
