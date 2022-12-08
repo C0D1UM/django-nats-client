@@ -23,7 +23,6 @@ toml = "^0"
 ipdb = "^0"
 django-environ = "^0.9"
 coverage = "^6"
-"backports.zoneinfo" = { version = "^0.2", python = "~3.8" }
 
 [tool.poetry-dynamic-versioning]
 enable = true
