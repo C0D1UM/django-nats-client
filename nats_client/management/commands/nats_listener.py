@@ -59,10 +59,10 @@ class Command(BaseCommand):
             raise e
 
         async def callback(msg: Msg):
-            reply = msg.reply
             data = msg.data.decode()
-            print(f'Received a message on "{reply}": {data}')
-            await self.nats_handler(reply, data)
+            reply = msg.reply
+            print(f'Received a message: {data}')
+            await self.nats_handler(data, reply=reply)
 
         subject = getattr(settings, 'NATS_LISTENING_SUBJECT', 'default')
         await self.nats.subscribe(subject, cb=callback)
@@ -70,7 +70,7 @@ class Command(BaseCommand):
     async def clean(self):
         await self.nats.close()
 
-    async def nats_handler(self, reply, body):
+    async def nats_handler(self, body, reply=None):
         data = json.loads(body)
 
         name = data['name']
@@ -84,4 +84,6 @@ class Command(BaseCommand):
 
         func = database_sync_to_async(func)
         r = await func(*args, **kwargs)
-        await self.nats.publish(reply, json.dumps({'result': r}, cls=DjangoJSONEncoder).encode())
+
+        if reply:
+            await self.nats.publish(reply, json.dumps({'result': r}, cls=DjangoJSONEncoder).encode())
