@@ -97,6 +97,30 @@ pip install django-nats-client
 import nats_client
 
 arg = 'some arg'
+nats_client.send(
+   'subject_name',
+   'method_name',
+   arg,
+   keyword_arg=1,
+   another_keyword_arg=2,
+)
+```
+
+Examples
+
+```python
+import nats_client
+
+nats_client.send('default', 'new_message', 'Hello, world!')
+nats_client.send('default', 'project_created', 1, name='ACME')
+```
+
+### Request-Reply
+
+```python
+import nats_client
+
+arg = 'some arg'
 nats_client.request(
    'subject_name',
    'method_name',
