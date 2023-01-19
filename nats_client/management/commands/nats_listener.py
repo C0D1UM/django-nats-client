@@ -6,6 +6,7 @@ from django.conf import settings
 from django.core.management import BaseCommand
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import close_old_connections
+from django.utils import autoreload
 from nats.aio.client import Client
 from nats.aio.client import Msg
 from nats.aio.errors import ErrNoServers
@@ -32,10 +33,29 @@ database_sync_to_async = DatabaseSyncToAsync
 
 
 class Command(BaseCommand):
+    help = "Starts a NATS listener."
+
     nats = Client()
 
+    def add_arguments(self, parser):
+        parser.add_argument(
+            "--reload",
+            action="store_true",
+            dest="reload",
+            help="Enable autoreload in development environment.",
+        )
+
     def handle(self, *args, **options):
-        loop = asyncio.get_event_loop()
+        reload = options.get('reload', False)
+        print('** Starting NATS listener' + (' with reload enabled' if reload else ''))
+        if reload:
+            autoreload.run_with_reloader(self.inner_run, *args, **options)
+        else:
+            self.inner_run(*args, **options)
+
+    def inner_run(self, *args, **options):
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
         print('** Initializing Loop')
         try:
             asyncio.ensure_future(self.nats_coroutine())
