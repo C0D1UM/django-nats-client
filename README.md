@@ -88,6 +88,9 @@ pip install django-nats-client
 
    ```bash
    python manage.py nats_listener
+
+   # or with autoreload enabled (suite for development)
+   python manage.py nats_listener --reload
    ```
 
 ### Sending message
