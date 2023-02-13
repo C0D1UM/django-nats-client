@@ -147,6 +147,7 @@ current_time = nats_client.request('default', 'get_current_time')  # 12:11
 |--------------------------|----------|-----------|---------------------------------------------------|
 | `NATS_OPTIONS`           | Yes      |           | Configuration to be passed in `nats.connect()`    |
 | `NATS_LISTENING_SUBJECT` | No       | 'default' | Subject for registering callback function         |
+| `NATS_REQUEST_TIMEOUT`   | No       | 1         | Timeout when using `request()` (in seconds)       |
 
 ## Development
 
