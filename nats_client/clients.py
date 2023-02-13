@@ -7,6 +7,8 @@ from nats.aio.client import Client
 from .types import ResponseType
 from .utils import parse_arguments
 
+DEFAULT_REQUEST_TIMEOUT = 1
+
 
 async def request_async(subject_name: str, method_name: str, *args, **kwargs) -> ResponseType:
     payload = parse_arguments(method_name, args, kwargs)
@@ -14,8 +16,9 @@ async def request_async(subject_name: str, method_name: str, *args, **kwargs) ->
     nc = Client()
     await nc.connect(**settings.NATS_OPTIONS)
 
+    timeout = getattr(settings, 'NATS_REQUEST_TIMEOUT', DEFAULT_REQUEST_TIMEOUT)
     try:
-        response = await nc.request(subject_name, payload)
+        response = await nc.request(subject_name, payload, timeout=timeout)
     finally:
         await nc.close()
 
