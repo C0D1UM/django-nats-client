@@ -102,7 +102,8 @@ class Command(BaseCommand):
             print(f'No function found for "{name}"')
             return
 
-        func = database_sync_to_async(func)
+        if not asyncio.iscoroutinefunction(func):
+            func = database_sync_to_async(func)
         r = await func(*args, **kwargs)
 
         if reply:

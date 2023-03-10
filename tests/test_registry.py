@@ -88,6 +88,7 @@ class FunctionRegistryRegisterTest(test.TestCase):
             pass
 
         self.registry.register(func)
+
         self.assertRaises(ValueError, self.registry.register, func)
         self.assertEqual(len(self.registry.registry.keys()), 1)
 
@@ -102,3 +103,23 @@ class FunctionRegistryRegisterTest(test.TestCase):
 
         self.assertRaises(ValueError, self.registry.register, name='func', func=another_func)
         self.assertEqual(len(self.registry.registry.keys()), 1)
+
+    def test_async_function(self):
+
+        @self.registry.register
+        async def func():
+            pass
+
+        self.assertEqual(len(self.registry.registry.keys()), 1)
+        self.assertIn('func', self.registry.registry)
+        self.assertEqual(self.registry.registry['func'], func)
+
+    def test_async_function_with_parenthesis(self):
+
+        @self.registry.register()
+        async def func():
+            pass
+
+        self.assertEqual(len(self.registry.registry.keys()), 1)
+        self.assertIn('func', self.registry.registry)
+        self.assertEqual(self.registry.registry['func'], func)
