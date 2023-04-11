@@ -15,6 +15,7 @@ packages = [
 python = "^3.8"
 django = ">=3.1"
 nats-py = "^2"
+jsonpickle = "^3.0"
 
 [tool.poetry.dev-dependencies]
 pylint = "^2"
