@@ -1,6 +1,7 @@
 import asyncio
 import json
 
+import jsonpickle
 from django.conf import settings
 from nats.aio.client import Client
 
@@ -10,7 +11,9 @@ from .utils import parse_arguments
 DEFAULT_REQUEST_TIMEOUT = 1
 
 
-async def request_async(subject_name: str, method_name: str, *args, _timeout: float = None, **kwargs) -> ResponseType:
+async def request_async(
+    subject_name: str, method_name: str, *args, _timeout: float = None, _raw=False, **kwargs
+) -> ResponseType:
     payload = parse_arguments(method_name, args, kwargs)
 
     nc = Client()
@@ -23,7 +26,17 @@ async def request_async(subject_name: str, method_name: str, *args, _timeout: fl
         await nc.close()
 
     data = response.data.decode()
-    return json.loads(data)['result']
+    parsed = json.loads(data)
+
+    if _raw:
+        parsed.pop('pickled_exc', None)
+        return parsed
+
+    if not parsed['success']:
+        exc = jsonpickle.decode(parsed['pickled_exc'])
+        raise exc
+
+    return parsed['result']
 
 
 async def send_async(subject_name: str, method_name: str, *args, **kwargs) -> None:
