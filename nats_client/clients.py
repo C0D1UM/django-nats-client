@@ -5,6 +5,7 @@ import jsonpickle
 from django.conf import settings
 from nats.aio.client import Client
 
+from .exceptions import NatsClientException
 from .types import ResponseType
 from .utils import parse_arguments
 
@@ -33,7 +34,11 @@ async def request_async(
         return parsed
 
     if not parsed['success']:
-        exc = jsonpickle.decode(parsed['pickled_exc'])
+        try:
+            exc = jsonpickle.decode(parsed['pickled_exc'])
+        except TypeError:
+            exc = NatsClientException(parsed['error'] + ': ' + parsed['message'])
+
         raise exc
 
     return parsed['result']
