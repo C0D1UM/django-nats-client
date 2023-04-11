@@ -73,7 +73,7 @@ class Command(BaseCommand):
         await self.nats.subscribe(subject, cb=callback)
 
     async def clean(self):
-        await self.nats.close()
+        await self.nats.drain()
 
     async def handler(self, body, reply=None):
         data = json.loads(body)
