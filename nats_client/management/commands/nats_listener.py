@@ -51,6 +51,8 @@ class Command(BaseCommand):
             loop.close()
 
     async def nats_coroutine(self):
+        subject = getattr(settings, 'NATS_LISTENING_SUBJECT', 'default')
+
         try:
             await self.nats.connect(**settings.NATS_OPTIONS)
             print('** Connected to NATS server')
@@ -59,27 +61,27 @@ class Command(BaseCommand):
             else:
                 print('** Listened on:')
                 for func_name in default_registry.registry.keys():
-                    print('     - ', func_name)
+                    print(f'     - {subject}.{func_name}')
         except (ErrNoServers, ErrTimeout) as e:
             raise e
 
         async def callback(msg: Msg):
             data = msg.data.decode()
             reply = msg.reply
-            print(f'Received a message: {data}')
-            await self.handler(data, reply=reply)
+            func_name = msg.subject[len(subject) + 1:]
+            print(f'Received a message on function `{func_name}`: {data}')
+            await self.handler(func_name, data, reply=reply)
 
-        subject = getattr(settings, 'NATS_LISTENING_SUBJECT', 'default')
-        await self.nats.subscribe(subject, cb=callback)
+        await self.nats.subscribe(f'{subject}.>', cb=callback)
 
     async def clean(self):
         await self.nats.drain()
 
-    async def handler(self, body, reply=None):
+    async def handler(self, func_name: str, body, reply=None):
         data = json.loads(body)
 
         try:
-            r = await nats_handler(data)
+            r = await nats_handler(func_name, data)
         except Exception as e:  # pylint: disable=broad-except
             traceback.print_exc()
             if reply:
