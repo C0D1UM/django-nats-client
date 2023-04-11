@@ -4,6 +4,7 @@ import traceback
 
 import jsonpickle
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.core.management import BaseCommand
 from django.core.serializers.json import DjangoJSONEncoder
 from django.utils import autoreload
@@ -82,12 +83,21 @@ class Command(BaseCommand):
         except Exception as e:  # pylint: disable=broad-except
             traceback.print_exc()
             if reply:
+                if isinstance(e, ValidationError):
+                    message = e.message_dict
+                else:
+                    message = str(e)
+                    try:
+                        message = json.loads(message)
+                    except json.JSONDecodeError:
+                        pass
+
                 await self.nats.publish(
                     reply,
                     json.dumps({
                         'success': False,
                         'error': e.__class__.__name__,
-                        'message': str(e),
+                        'message': message,
                         'pickled_exc': jsonpickle.encode(e),
                     }).encode()
                 )
