@@ -100,11 +100,11 @@ import nats_client
 
 arg = 'some arg'
 nats_client.send(
-   'subject_name',
-   'method_name',
-   arg,
-   keyword_arg=1,
-   another_keyword_arg=2,
+    'subject_name',
+    'method_name',
+    arg,
+    keyword_arg=1,
+    another_keyword_arg=2,
 )
 ```
 
@@ -124,11 +124,11 @@ import nats_client
 
 arg = 'some arg'
 nats_client.request(
-   'subject_name',
-   'method_name',
-   arg,
-   keyword_arg=1,
-   another_keyword_arg=2,
+    'subject_name',
+    'method_name',
+    arg,
+    keyword_arg=1,
+    another_keyword_arg=2,
 )
 ```
 
@@ -143,11 +143,15 @@ current_time = nats_client.request('default', 'get_current_time')  # 12:11
 
 ## Settings
 
-| Key                      | Required | Default   | Description                                       |
-|--------------------------|----------|-----------|---------------------------------------------------|
-| `NATS_OPTIONS`           | Yes      |           | Configuration to be passed in `nats.connect()`    |
-| `NATS_LISTENING_SUBJECT` | No       | 'default' | Subject for registering callback function         |
-| `NATS_REQUEST_TIMEOUT`   | No       | 1         | Timeout when using `request()` (in seconds)       |
+| Key                            | Required | Default                           | Description                                                   |
+|--------------------------------|----------|-----------------------------------|---------------------------------------------------------------|
+| `NATS_OPTIONS`                 | Yes      |                                   | Configuration to be passed in `nats.connect()`                |
+| `NATS_LISTENING_SUBJECT`       | No       | `'default'`                       | Subject for registering callback function                     |
+| `NATS_REQUEST_TIMEOUT`         | No       | `1`                               | Timeout when using `request()` (in seconds)                   |
+| `NATS_JETSTREAM_ENABLED`       | No       | `True`                            | Enable JetStream                                              |
+| `NATS_JETSTREAM_DURABLE_NAME`  | No       | `settings.NATS_LISTENING_SUBJECT` | Durable name which is unique across all subscriptions         |
+| `NATS_JETSTREAM_CREATE_STREAM` | No       | `True`                            | Automatically create stream named in `NATS_LISTENING_SUBJECT` |
+| `NATS_JETSTREAM_CONFIG`        | No       | `{}`                              | Extra configuration for JetStream streams                     |
 
 ## Development
 
