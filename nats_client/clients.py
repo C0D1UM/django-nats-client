@@ -15,13 +15,24 @@ from .utils import parse_arguments
 DEFAULT_REQUEST_TIMEOUT = 1
 
 
+async def get_nc_client(nc: Client = None):
+    if nc is None:
+        nc = Client()
+
+    server = getattr(settings, 'NATS_SERVER', None)
+    servers = [server] if server else getattr(settings, 'NATS_SERVERS', [])
+    options = getattr(settings, 'NATS_OPTIONS', {})
+
+    await nc.connect(servers=servers, **options)
+    return nc
+
+
 async def request(
         namespace: str, method_name: str, *args, _timeout: float = None, _raw=False, **kwargs
 ) -> ResponseType:
     payload = parse_arguments(args, kwargs)
 
-    nc = Client()
-    await nc.connect(**settings.NATS_OPTIONS)
+    nc = await get_nc_client()
 
     timeout = _timeout or getattr(settings, 'NATS_REQUEST_TIMEOUT', DEFAULT_REQUEST_TIMEOUT)
     try:
@@ -54,8 +65,7 @@ def request_sync(*args, **kwargs):
 async def publish(namespace: str, method_name: str, *args, _js=False, **kwargs) -> None:
     payload = parse_arguments(args, kwargs)
 
-    nc = Client()
-    await nc.connect(**settings.NATS_OPTIONS)
+    nc = await get_nc_client()
 
     try:
         if _js:

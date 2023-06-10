@@ -8,7 +8,8 @@
 
 ## Important Notes
 
-> 🚨 The latest major version of this package, `v0.4.0`, has a numerous breaking changes. Please review its [release note](https://github.com/C0D1UM/django-nats-client/releases/tag/v0.4.0).
+> 🚨 The latest major version of this package, `v0.4.0`, has a numerous breaking changes.
+> Please review its [release note](https://github.com/C0D1UM/django-nats-client/releases/tag/v0.4.0).
 
 ## Features
 
@@ -161,16 +162,17 @@ current_time = await nats_client.request('default', 'get_current_time')  # 12:11
 
 ## Settings
 
-| Key                            | Type               | Required | Default                   | Description                                                       |
-|--------------------------------|--------------------|----------|---------------------------|-------------------------------------------------------------------|
-| `NATS_SERVERS`                 | `str \| list[str]` | Yes      |                           | NATS server's host(s)                                             |                                                                   |
-| `NATS_NAMESPACE`               | `str`              | No       | `'default'`               | Main namespace using for prefixing subject, stream name, and etc. |
-| `NATS_REQUEST_TIMEOUT`         | `int`              | No       | `1`                       | Timeout when using `request()` (in seconds)                       |
-| `NATS_OPTIONS`                 | `dict`             | No       | `{}`                      | Other configuration to be passed in `nats.connect()`              |
-| `NATS_JETSTREAM_ENABLED`       | `bool`             | No       | `True`                    | Enable JetStream                                                  |
-| `NATS_JETSTREAM_DURABLE_NAME`  | `str`              | No       | `settings.NATS_NAMESPACE` | Durable name which is unique across all subscriptions             |
-| `NATS_JETSTREAM_CREATE_STREAM` | `bool`             | No       | `True`                    | Automatically create stream named in `NATS_NAMESPACE`             |
-| `NATS_JETSTREAM_CONFIG`        | `dict`             | No       | `{}`                      | Extra configuration for JetStream streams                         |
+| Key                            | Type        | Required                      | Default                   | Description                                                       |
+|--------------------------------|-------------|-------------------------------|---------------------------|-------------------------------------------------------------------|
+| `NATS_SERVER`                  | `str`       | Required if no `NATS_SERVERS` |                           | NATS server's host                                                |
+| `NATS_SERVERS`                 | `list[str]` | Required if no `NATS_SERVER`  |                           | NATS server's hosts (for NATS cluster)                            |
+| `NATS_NAMESPACE`               | `str`       | No                            | `'default'`               | Main namespace using for prefixing subject, stream name, and etc. |
+| `NATS_REQUEST_TIMEOUT`         | `int`       | No                            | `1`                       | Timeout when using `request()` (in seconds)                       |
+| `NATS_OPTIONS`                 | `dict`      | No                            | `{}`                      | Other configuration to be passed in `nats.connect()`              |
+| `NATS_JETSTREAM_ENABLED`       | `bool`      | No                            | `True`                    | Enable JetStream                                                  |
+| `NATS_JETSTREAM_DURABLE_NAME`  | `str`       | No                            | `settings.NATS_NAMESPACE` | Durable name which is unique across all subscriptions             |
+| `NATS_JETSTREAM_CREATE_STREAM` | `bool`      | No                            | `True`                    | Automatically create stream named in `NATS_NAMESPACE`             |
+| `NATS_JETSTREAM_CONFIG`        | `dict`      | No                            | `{}`                      | Extra configuration for JetStream streams                         |
 
 ## Development
 
