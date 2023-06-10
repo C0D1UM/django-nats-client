@@ -1,10 +1,14 @@
-# Django NATS
+# Django NATS Client
 
 [![GitHub](https://img.shields.io/github/license/C0D1UM/django-nats-client)](https://github.com/C0D1UM/django-nats-client/blob/main/LICENSE)
 [![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/C0D1UM/django-nats-client/ci.yml?branch=main)](https://github.com/C0D1UM/django-nats-client/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/C0D1UM/django-nats-client/branch/main/graph/badge.svg?token=PN19DJ3SDF)](https://codecov.io/gh/C0D1UM/django-nats-client)
 [![PyPI](https://img.shields.io/pypi/v/django-nats-client)](https://pypi.org/project/django-nats-client/)  
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/django-nats-client)](https://github.com/C0D1UM/django-nats-client)
+
+## Important Notes
+
+> 🚨 The latest major version of this package, `v0.4.0`, has a numerous breaking changes. Please review its [release note](https://github.com/C0D1UM/django-nats-client/releases/tag/v0.4.0).
 
 ## Features
 
