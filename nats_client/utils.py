@@ -5,9 +5,8 @@ from django.core.serializers.json import DjangoJSONEncoder
 from django.db import close_old_connections
 
 
-def parse_arguments(method_name: str, args: tuple, kwargs: dict) -> bytes:
+def parse_arguments(args: tuple, kwargs: dict) -> bytes:
     msg = {
-        'name': method_name,
         'args': args,
         'kwargs': kwargs,
     }
