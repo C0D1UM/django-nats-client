@@ -18,9 +18,8 @@ DEFAULT_REQUEST_TIMEOUT = 1
 async def get_nc_client():
     nc = Client()
 
-    servers = settings.NATS_SERVERS
-    if isinstance(servers, str):
-        servers = [servers]
+    server = getattr(settings, 'NATS_SERVER', None)
+    servers = [server] if server else getattr(settings, 'NATS_SERVERS', [])
     options = getattr(settings, 'NATS_OPTIONS', {})
 
     await nc.connect(servers=servers, **options)
