@@ -66,7 +66,7 @@ class Command(BaseCommand):
             await self.nats.connect(**settings.NATS_OPTIONS)
             print('** Connected to NATS server')
 
-            if getattr(settings, 'NATS_JETSTREAM_ENABLED', False):
+            if getattr(settings, 'NATS_JETSTREAM_ENABLED', True):
                 self.js = self.nats.jetstream()
                 print('** Initialized JetStream')
         except (ErrNoServers, ErrTimeout) as e:
