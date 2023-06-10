@@ -57,8 +57,8 @@ class Command(BaseCommand):
             loop.close()
 
     async def nats_coroutine(self):
-        subject = getattr(settings, 'NATS_LISTENING_SUBJECT', 'default')
-        durable_name = getattr(settings, 'NATS_JETSTREAM_DURABLE_NAME', subject)
+        namespace = getattr(settings, 'NATS_NAMESPACE', 'default')
+        durable_name = getattr(settings, 'NATS_JETSTREAM_DURABLE_NAME', namespace)
         create_stream = getattr(settings, 'NATS_JETSTREAM_CRATE_STREAM', True)
         stream_config = getattr(settings, 'NATS_JETSTREAM_CONFIG', {})
 
@@ -81,8 +81,8 @@ class Command(BaseCommand):
             stream_config.pop('name', None)
             stream_config.pop('subjects', None)
             await self.js.add_stream(
-                name=subject,
-                subjects=[f'{subject}.js.>'],
+                name=namespace,
+                subjects=[f'{namespace}.js.>'],
                 **stream_config,
             )
 
@@ -110,7 +110,7 @@ class Command(BaseCommand):
         print('** Listened on:')
         for data in default_registry.registry.values():
             if data['js']:
-                full_name = f'{data["subject"]}.js.{data["name"]}'
+                full_name = f'{data["namespace"]}.js.{data["name"]}'
                 if self.js is None:
                     continue
 
@@ -121,7 +121,7 @@ class Command(BaseCommand):
                 )
                 asyncio.ensure_future(fetch(psub))
             else:
-                full_name = f'{data["subject"]}.{data["name"]}'
+                full_name = f'{data["namespace"]}.{data["name"]}'
                 await self.nats.subscribe(full_name, cb=callback)
             print(f'     - {full_name}' + (' (JetStream)' if data['js'] else ''))
 

@@ -1,3 +1,5 @@
+__all__ = ['register']
+
 from django.conf import settings
 
 
@@ -23,18 +25,18 @@ class FunctionRegistry:
         return dec
 
     def register_function(self, func, name: str = None, **kwargs):
-        subject = kwargs.get('subject', getattr(settings, 'NATS_LISTENING_SUBJECT', 'default'))
+        namespace = kwargs.get('namespace', getattr(settings, 'NATS_NAMESPACE', 'default'))
         name = name or getattr(func, '_decorated_function', func).__name__
         js = kwargs.get('js', False)
-        key = f'{subject}.js.{name}' if js else f'{subject}.{name}'
+        key = f'{namespace}.js.{name}' if js else f'{namespace}.{name}'
 
         if key in self.registry:
             raise ValueError(f'Duplicated NATS function key `{key}`.')
 
         self.registry[key] = {
             'func': func,
+            'namespace': namespace,
             'name': name,
-            'subject': subject,
             'js': js,
         }
         return func

@@ -1,4 +1,7 @@
+__all__ = ['request', 'request_sync', 'publish', 'publish_sync', 'js_publish', 'js_publish_sync']
+
 import asyncio
+import functools
 import json
 
 import jsonpickle
@@ -12,8 +15,8 @@ from .utils import parse_arguments
 DEFAULT_REQUEST_TIMEOUT = 1
 
 
-async def request_async(
-    subject_name: str, method_name: str, *args, _timeout: float = None, _raw=False, **kwargs
+async def request(
+        subject_name: str, method_name: str, *args, _timeout: float = None, _raw=False, **kwargs
 ) -> ResponseType:
     payload = parse_arguments(method_name, args, kwargs)
 
@@ -44,21 +47,29 @@ async def request_async(
     return parsed['result']
 
 
-async def send_async(subject_name: str, method_name: str, *args, **kwargs) -> None:
+def request_sync(*args, **kwargs):
+    return asyncio.run(request(*args, **kwargs))
+
+
+async def publish(subject_name: str, method_name: str, *args, _js=False, **kwargs) -> None:
     payload = parse_arguments(method_name, args, kwargs)
 
     nc = Client()
     await nc.connect(**settings.NATS_OPTIONS)
 
     try:
-        await nc.publish(subject_name, payload)
+        if _js:
+            js = nc.jetstream()
+            await js.publish(subject_name, payload)
+        else:
+            await nc.publish(subject_name, payload)
     finally:
         await nc.close()
 
 
-def request(*args, **kwargs):
-    return asyncio.run(request_async(*args, **kwargs))
+def publish_sync(*args, **kwargs):
+    return asyncio.run(publish(*args, **kwargs))
 
 
-def send(*args, **kwargs):
-    return asyncio.run(send_async(*args, **kwargs))
+js_publish = functools.partial(publish, _js=True)
+js_publish_sync = functools.partial(publish_sync, _js=True)
