@@ -24,16 +24,18 @@ class FunctionRegistry:
 
     def register_function(self, func, name: str = None, **kwargs):
         subject = kwargs.get('subject', getattr(settings, 'NATS_LISTENING_SUBJECT', 'default'))
-        func_name = getattr(func, '_decorated_function', func).__name__
-        name = f'{subject}.{name or func_name}'
+        name = name or getattr(func, '_decorated_function', func).__name__
+        js = kwargs.get('js', False)
+        key = f'{subject}.js.{name}' if js else f'{subject}.{name}'
 
-        if name in self.registry:
-            raise ValueError(f'Duplicated NATS function named `{name}`.')
+        if key in self.registry:
+            raise ValueError(f'Duplicated NATS function key `{key}`.')
 
-        self.registry[name] = {
+        self.registry[key] = {
             'func': func,
+            'name': name,
             'subject': subject,
-            'js': kwargs.get('js', False),
+            'js': js,
         }
         return func
 
