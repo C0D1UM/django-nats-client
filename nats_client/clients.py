@@ -15,8 +15,9 @@ from .utils import parse_arguments
 DEFAULT_REQUEST_TIMEOUT = 1
 
 
-async def get_nc_client():
-    nc = Client()
+async def get_nc_client(nc: Client = None):
+    if nc is None:
+        nc = Client()
 
     server = getattr(settings, 'NATS_SERVER', None)
     servers = [server] if server else getattr(settings, 'NATS_SERVERS', [])

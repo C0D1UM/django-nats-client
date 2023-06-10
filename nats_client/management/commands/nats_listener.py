@@ -14,6 +14,7 @@ from nats.aio.errors import ErrNoServers
 from nats.aio.errors import ErrTimeout
 from nats.aio.msg import Msg
 
+from ...clients import get_nc_client
 from ...handlers import nats_handler
 from ...registry import default_registry
 
@@ -63,7 +64,7 @@ class Command(BaseCommand):
         stream_config = getattr(settings, 'NATS_JETSTREAM_CONFIG', {})
 
         try:
-            await self.nats.connect(**settings.NATS_OPTIONS)
+            await get_nc_client(self.nats)
             print('** Connected to NATS server')
 
             if getattr(settings, 'NATS_JETSTREAM_ENABLED', True):
