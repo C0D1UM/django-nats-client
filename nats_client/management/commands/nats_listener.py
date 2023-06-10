@@ -94,7 +94,6 @@ class Command(BaseCommand):
             asyncio.ensure_future(self.handler(func_name, data, reply=reply))
 
         async def fetch(psub):
-            print('fetching')
             try:
                 msgs = await psub.fetch(timeout=1)
                 for msg in msgs:
