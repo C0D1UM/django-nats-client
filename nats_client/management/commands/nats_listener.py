@@ -1,6 +1,5 @@
 import asyncio
 import json
-import traceback
 
 import jsonpickle
 import nats.errors
@@ -130,7 +129,6 @@ class Command(BaseCommand):
             data = json.loads(body)
             r = await nats_handler(func_name, data)
         except Exception as e:  # pylint: disable=broad-except
-            traceback.print_exc()
             if reply:
                 if isinstance(e, ValidationError):
                     message = e.message_dict
@@ -150,7 +148,7 @@ class Command(BaseCommand):
                         'pickled_exc': jsonpickle.encode(e),
                     }).encode()
                 )
-            return
+            raise e
 
         if reply:
             await self.nats.publish(reply, json.dumps({'success': True, 'result': r}, cls=DjangoJSONEncoder).encode())
