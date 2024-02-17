@@ -5,8 +5,8 @@ from .utils import database_sync_to_async
 
 
 async def nats_handler(key: str, data):
-    args = data['args']
-    kwargs = data['kwargs']
+    args = data.get('args', [])
+    kwargs = data.get('kwargs', {})
 
     data = default_registry.registry.get(key)
     if data is None:
